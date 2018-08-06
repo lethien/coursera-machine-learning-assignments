@@ -62,24 +62,36 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+%transform y vector to m x 10 matrice
+temp = eye(num_labels);
+y_vec = zeros(m, num_labels);
+for i=1:m
+    y_vec(i, :)= temp(y(i), :);
+end;
+
+%input layer
+a1 = [ones(m, 1) X]; 
+
+%hidden layer
+z2 =  a1 * Theta1'; 
+a2 = [ones(m, 1) sigmoid(z2)]; 
+
+%output layer
+z3 = a2 * Theta2'; 
+hypothesis = sigmoid(z3);
 
 
+J = (1/m) * sum(sum((-y_vec).*log(hypothesis) - (1-y_vec).*log(1-hypothesis))) ... 
+    + (lambda / (2*m)) * (sum(sum(power(Theta1(:, 2:end), 2))) + sum(sum(power(Theta2(:, 2:end), 2))));
 
+sigma3 = hypothesis - y_vec;
+sigma2 = (sigma3 * Theta2(:, 2:end)) .* sigmoidGradient(z2);
 
+delta1 = sigma2' * a1;
+delta2 = sigma3' * a2;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Theta1_grad = (1/m) * delta1 + (lambda/m)*[zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
+Theta2_grad = (1/m) * delta2 + (lambda/m)*[zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
 % -------------------------------------------------------------
 
 % =========================================================================
