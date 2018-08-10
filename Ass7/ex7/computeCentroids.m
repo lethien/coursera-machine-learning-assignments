@@ -26,12 +26,29 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
+%{ using for loop
+for i = 1:K
+    Ck = 0;
+    for j = 1:m
+        if (idx(j) == i)
+            centroids(i, :) = centroids(i, :) + X(j, :);
+            Ck = Ck + 1;
+        endif
+    end
 
+    if (Ck > 0)
+        centroids(i, :) = centroids(i, :) / Ck;
+    endif
+end
+%}
 
+% vectorized
+temp = zeros(K, m);
+for i = 1:m
+    temp(idx(i), i) = 1;
+end
 
-
-
-
+centroids = (temp * X) ./ sum(temp, 2);
 
 % =============================================================
 
